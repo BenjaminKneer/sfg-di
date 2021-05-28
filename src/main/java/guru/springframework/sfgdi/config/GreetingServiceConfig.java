@@ -1,15 +1,17 @@
 package guru.springframework.sfgdi.config;
 
+import guru.springframework.sfgdi.repositories.EnglishGreetingRepository;
+import guru.springframework.sfgdi.repositories.EnglishGreetingRepositoryImpl;
 import guru.springframework.sfgdi.services.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
 
-// Used if you want to inject 3rd party libs which code u dont own
+// can be Used if you want to inject 3rd party libs which code u dont own
 @Configuration
 public class GreetingServiceConfig {
+
 
     @Profile({"ES", "default"})
     @Bean("i18nService")
@@ -17,10 +19,15 @@ public class GreetingServiceConfig {
         return new I18NSpanishService();
     }
 
+    @Bean
+    public EnglishGreetingRepository englishGreetingRepository() {
+        return new EnglishGreetingRepositoryImpl();
+    }
+
     @Profile("EN")
     @Bean
-    public I18nEnglishGreetingService i18nService() {
-        return new I18nEnglishGreetingService();
+    public I18nEnglishGreetingService i18nService(EnglishGreetingRepository englishGreetingRepository) {
+        return new I18nEnglishGreetingService(englishGreetingRepository);
     }
 
     @Primary
